@@ -157,6 +157,7 @@ pub(crate) fn validate_builtin_value(
                     message: "normalizedString must not contain CR, LF, or TAB".to_string(),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -171,6 +172,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid boolean", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -204,6 +206,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid decimal", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -232,6 +235,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid float/double", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -242,6 +246,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid integer", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -252,6 +257,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid long", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -262,6 +268,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid int", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -272,6 +279,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid short", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -282,6 +290,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid byte", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -294,6 +303,7 @@ pub(crate) fn validate_builtin_value(
                         message: format!("'{}' is not a valid nonNegativeInteger", text),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: None,
                     });
                 }
             }
@@ -307,6 +317,7 @@ pub(crate) fn validate_builtin_value(
                         message: format!("'{}' is not a valid positiveInteger", text),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: None,
                     });
                 }
             }
@@ -320,6 +331,7 @@ pub(crate) fn validate_builtin_value(
                         message: format!("'{}' is not a valid nonPositiveInteger", text),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: None,
                     });
                 }
             }
@@ -333,6 +345,7 @@ pub(crate) fn validate_builtin_value(
                         message: format!("'{}' is not a valid negativeInteger", text),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: None,
                     });
                 }
             }
@@ -344,6 +357,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid unsignedLong", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -354,6 +368,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid unsignedInt", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -364,6 +379,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid unsignedShort", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -374,6 +390,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid unsignedByte", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -384,6 +401,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid dateTime", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -394,6 +412,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid date", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -404,6 +423,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid time", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -415,6 +435,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not valid hexBinary", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -442,6 +463,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not valid base64Binary", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -452,6 +474,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid anyURI", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -462,6 +485,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid NCName/ID/IDREF", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -490,6 +514,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid language tag", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -504,6 +529,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid NMTOKEN", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -514,6 +540,7 @@ pub(crate) fn validate_builtin_value(
                     message: "NMTOKENS must contain at least one token".to_string(),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             } else {
                 for token in v.split_whitespace() {
@@ -526,6 +553,7 @@ pub(crate) fn validate_builtin_value(
                             message: format!("'{}' is not a valid NMTOKEN in NMTOKENS", token),
                             line: Some(doc.node_line(node)),
                             column: Some(doc.node_column(node)),
+                            element_path: None,
                         });
                     }
                 }
@@ -538,6 +566,7 @@ pub(crate) fn validate_builtin_value(
                     message: "IDREFS must contain at least one IDREF".to_string(),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             } else {
                 for token in v.split_whitespace() {
@@ -546,6 +575,7 @@ pub(crate) fn validate_builtin_value(
                             message: format!("'{}' is not a valid IDREF in IDREFS", token),
                             line: Some(doc.node_line(node)),
                             column: Some(doc.node_column(node)),
+                            element_path: None,
                         });
                     }
                 }
@@ -558,6 +588,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid NOTATION value", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -568,6 +599,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid ENTITY value", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -578,6 +610,7 @@ pub(crate) fn validate_builtin_value(
                     message: "ENTITIES must contain at least one ENTITY".to_string(),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             } else {
                 for token in v.split_whitespace() {
@@ -586,6 +619,7 @@ pub(crate) fn validate_builtin_value(
                             message: format!("'{}' is not a valid ENTITY in ENTITIES", token),
                             line: Some(doc.node_line(node)),
                             column: Some(doc.node_column(node)),
+                            element_path: None,
                         });
                     }
                 }
@@ -598,6 +632,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid duration", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -608,6 +643,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid gYear", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -618,6 +654,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid gYearMonth", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -628,6 +665,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid gMonth", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -638,6 +676,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid gMonthDay", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -648,6 +687,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid gDay", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -659,6 +699,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid Name", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -671,6 +712,7 @@ pub(crate) fn validate_builtin_value(
                     message: format!("'{}' is not a valid QName", text),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -694,6 +736,7 @@ pub(crate) fn validate_list_facet(
                     message: format!("List has {} items, less than minLength {}", item_count, min),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -703,6 +746,7 @@ pub(crate) fn validate_list_facet(
                     message: format!("List has {} items, exceeds maxLength {}", item_count, max),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -712,6 +756,7 @@ pub(crate) fn validate_list_facet(
                     message: format!("List has {} items, expected length {}", item_count, len),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -726,6 +771,7 @@ pub(crate) fn validate_list_facet(
                     ),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -737,6 +783,7 @@ pub(crate) fn validate_list_facet(
                         message: format!("Value '{}' does not match pattern '{}'", text, pattern),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: None,
                     });
                 }
             }
@@ -828,6 +875,7 @@ pub(crate) fn validate_facet(
                         message: format!("Value length {} is less than minLength {}", len, min),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: None,
                     });
                 }
             }
@@ -840,6 +888,7 @@ pub(crate) fn validate_facet(
                         message: format!("Value length {} exceeds maxLength {}", len, max),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: None,
                     });
                 }
             }
@@ -852,6 +901,7 @@ pub(crate) fn validate_facet(
                         message: format!("Value length {} does not match length {}", len, expected),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: None,
                     });
                 }
             }
@@ -867,6 +917,7 @@ pub(crate) fn validate_facet(
                     message: format!("'{}' is not one of the allowed values: {:?}", text, values),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -876,6 +927,7 @@ pub(crate) fn validate_facet(
                     message: format!("Value '{}' is less than minInclusive {}", text.trim(), min),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -885,6 +937,7 @@ pub(crate) fn validate_facet(
                     message: format!("Value '{}' exceeds maxInclusive {}", text.trim(), max),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -899,6 +952,7 @@ pub(crate) fn validate_facet(
                     ),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -913,6 +967,7 @@ pub(crate) fn validate_facet(
                     ),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -927,6 +982,7 @@ pub(crate) fn validate_facet(
                     ),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: None,
                 });
             }
         }
@@ -942,6 +998,7 @@ pub(crate) fn validate_facet(
                         ),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: None,
                     });
                 }
             }
@@ -953,6 +1010,7 @@ pub(crate) fn validate_facet(
                         message: format!("Value '{}' does not match pattern '{}'", text, pattern),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: None,
                     });
                 }
             }

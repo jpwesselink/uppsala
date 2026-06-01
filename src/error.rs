@@ -63,7 +63,7 @@ pub struct XPathError {
 }
 
 /// An XSD validation error.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct ValidationError {
     /// Human-readable description of the validation failure.
     pub message: String,
@@ -71,6 +71,13 @@ pub struct ValidationError {
     pub line: Option<usize>,
     /// Column number in the instance document, if available.
     pub column: Option<usize>,
+    /// Local name (or XPath-style path) of the element this error
+    /// pertains to, if the validator can determine it.
+    ///
+    /// Added by imferno-patches branch (not in upstream uppsala v0.4.0).
+    /// Lets downstream consumers refine generic XSD bucket codes into
+    /// per-element catalogue codes without parsing the message string.
+    pub element_path: Option<String>,
 }
 
 impl fmt::Display for XmlError {
@@ -157,6 +164,7 @@ impl XmlError {
             message: message.into(),
             line: None,
             column: None,
+            element_path: None,
         })
     }
 }

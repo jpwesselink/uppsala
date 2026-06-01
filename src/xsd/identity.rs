@@ -65,6 +65,7 @@ impl XsdValidator {
                             ),
                             line: Some(doc.node_line(sel_node)),
                             column: Some(doc.node_column(sel_node)),
+                            element_path: None,
                         });
                         multiplicity_error = true;
                         break;
@@ -94,6 +95,7 @@ impl XsdValidator {
                             ),
                             line: Some(doc.node_line(sel_node)),
                             column: Some(doc.node_column(sel_node)),
+                            element_path: None,
                         });
                         continue;
                     }
@@ -141,6 +143,7 @@ impl XsdValidator {
                         ),
                         line: Some(doc.node_line(sel_node)),
                         column: Some(doc.node_column(sel_node)),
+                        element_path: None,
                     });
                 } else {
                     tuples.push(tuple);
@@ -233,6 +236,7 @@ impl XsdValidator {
                         ),
                         line: Some(doc.node_line(sel_node)),
                         column: Some(doc.node_column(sel_node)),
+                        element_path: None,
                     });
                 }
             }
