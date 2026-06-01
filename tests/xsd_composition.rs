@@ -531,3 +531,103 @@ fn uncanonicalizable_base_path_fails_closed() {
         err
     );
 }
+
+// =============================================================================
+// PATCH 2 — imported-namespace facet enforcement
+// =============================================================================
+//
+// uppsala v0.4.0 loads imported schemas (when schemaLocation is provided) and
+// merges their types into the validator's `types` map, but pattern/restriction
+// facets on those imported types are NOT applied when an element in the
+// primary schema is typed against an imported type. Built-in types and types
+// in the primary schema's own targetNamespace work normally.
+//
+// The two tests below pin the fix: a positive case (good value passes) and a
+// negative case (bad value trips the imported pattern facet).
+
+fn write_dcml_stub_at(dir: &std::path::Path) -> PathBuf {
+    let stub_path = dir.join("dcml-stub.xsd");
+    fs::write(
+        &stub_path,
+        r#"<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:dcml="urn:dcml-stub"
+           targetNamespace="urn:dcml-stub"
+           elementFormDefault="qualified">
+  <xs:simpleType name="UUIDType">
+    <xs:restriction base="xs:anyURI">
+      <xs:pattern value="urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>"#,
+    )
+    .expect("write dcml-stub.xsd");
+    stub_path
+}
+
+fn primary_schema_with_dcml_import() -> &'static str {
+    r#"<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:cpl="urn:test:cpl"
+           xmlns:dcml="urn:dcml-stub"
+           targetNamespace="urn:test:cpl"
+           elementFormDefault="qualified">
+  <xs:import namespace="urn:dcml-stub" schemaLocation="dcml-stub.xsd"/>
+  <xs:element name="Doc">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Id" type="dcml:UUIDType"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>"#
+}
+
+#[test]
+fn imported_simple_type_facet_accepts_valid_value() {
+    let dir = mkdir_unique("imported-facet-positive");
+    write_dcml_stub_at(&dir);
+    let schema_path = dir.join("primary.xsd");
+    fs::write(&schema_path, primary_schema_with_dcml_import())
+        .expect("write primary schema");
+    let instance = r#"<Doc xmlns="urn:test:cpl">
+        <Id>urn:uuid:00000000-1111-2222-3333-444455556666</Id>
+    </Doc>"#;
+    let errors = validate(
+        primary_schema_with_dcml_import(),
+        &schema_path,
+        instance,
+    );
+    assert!(
+        errors.is_empty(),
+        "well-formed UUID should pass dcml:UUIDType facet, got: {:#?}",
+        errors,
+    );
+}
+
+#[test]
+fn imported_simple_type_facet_rejects_value_violating_pattern() {
+    let dir = mkdir_unique("imported-facet-negative");
+    write_dcml_stub_at(&dir);
+    let schema_path = dir.join("primary.xsd");
+    fs::write(&schema_path, primary_schema_with_dcml_import())
+        .expect("write primary schema");
+    let instance = r#"<Doc xmlns="urn:test:cpl">
+        <Id>not-a-uuid</Id>
+    </Doc>"#;
+    let errors = validate(
+        primary_schema_with_dcml_import(),
+        &schema_path,
+        instance,
+    );
+    assert!(
+        !errors.is_empty(),
+        "value violating imported-type pattern facet must trip a validation error, \
+         but uppsala accepted it silently (this is the imported-namespace-facet bug)"
+    );
+    assert!(
+        errors.iter().any(|e| e.contains("pattern") || e.contains("not match")),
+        "expected pattern-violation message, got: {:#?}",
+        errors,
+    );
+}

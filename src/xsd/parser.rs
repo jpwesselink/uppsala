@@ -103,7 +103,7 @@ pub(super) fn parse_element_decl(
     };
 
     let type_ref = if let Some(type_name) = elem.get_attribute("type") {
-        resolve_type_name(type_name, schema_target_ns)
+        resolve_type_name(type_name, schema_target_ns, doc, node)
     } else {
         // Check for inline type definition
         let mut inline_type = TypeRef::BuiltIn(BuiltInType::AnyType);
@@ -259,7 +259,18 @@ fn parse_substitution_group(
 ///
 /// If the name matches a built-in XSD type, returns `TypeRef::BuiltIn`.
 /// Otherwise returns `TypeRef::Named` with the appropriate namespace.
-pub(super) fn resolve_type_name(type_name: &str, target_ns: &Option<String>) -> TypeRef {
+///
+/// `context` is the schema-tree node where the type reference appears.
+/// Used to look up the prefix's namespace URI from the nearest
+/// enclosing `xmlns:<prefix>="..."` declaration — necessary for
+/// imported-namespace types like `dcml:UUIDType` to resolve to the
+/// imported namespace rather than the primary schema's own.
+pub(super) fn resolve_type_name(
+    type_name: &str,
+    target_ns: &Option<String>,
+    doc: &Document,
+    context: NodeId,
+) -> TypeRef {
     // Check for xs: prefix
     let (prefix, local) = if let Some(colon) = type_name.find(':') {
         (&type_name[..colon], &type_name[colon + 1..])
@@ -290,10 +301,42 @@ pub(super) fn resolve_type_name(type_name: &str, target_ns: &Option<String>) -> 
     } else if prefix.is_empty() {
         TypeRef::Named(target_ns.clone(), local.to_string())
     } else {
-        // Non-builtin prefixed type — assume it's in the target namespace
-        // (In a full implementation we'd resolve the prefix via namespace declarations)
-        TypeRef::Named(target_ns.clone(), local.to_string())
+        // Non-builtin prefixed type: resolve the prefix against the
+        // schema-tree xmlns declarations (innermost wins, walk
+        // ancestors). Imported-namespace types like `dcml:UUIDType`
+        // resolve to the dcml namespace this way. Fall back to the
+        // target namespace if the prefix isn't declared anywhere,
+        // matching the legacy assume-target-ns behaviour for
+        // ill-formed schemas rather than panicking.
+        let resolved_ns =
+            resolve_prefix(doc, context, prefix).or_else(|| target_ns.clone());
+        TypeRef::Named(resolved_ns, local.to_string())
     }
+}
+
+/// Walk a node and its ancestors looking for an `xmlns:<prefix>="..."`
+/// attribute. Returns the namespace URI declared by the nearest
+/// enclosing declaration (XML namespace scoping rules), or `None` if
+/// the prefix isn't declared anywhere in the tree above `node`.
+///
+/// Used by `resolve_type_name` to translate a QName's prefix into the
+/// namespace URI to key the type lookup against.
+pub(super) fn resolve_prefix(doc: &Document, node: NodeId, prefix: &str) -> Option<String> {
+    let mut current = Some(node);
+    while let Some(id) = current {
+        if let Some(elem) = doc.element(id) {
+            // XML xmlns declarations live in `namespace_declarations`,
+            // not the regular `attributes` Vec — the DOM extracts them
+            // into a dedicated context list during parse.
+            for (decl_prefix, uri) in &elem.namespace_declarations {
+                if decl_prefix.as_ref() == prefix {
+                    return Some(uri.to_string());
+                }
+            }
+        }
+        current = doc.parent(id);
+    }
+    None
 }
 
 /// Map a local type name to the corresponding `BuiltInType` variant.
@@ -536,9 +579,17 @@ pub(super) fn parse_complex_type(
                                     let is_extension = gc_elem.name.local_name == "extension";
                                     derived_by_extension = Some(is_extension);
                                     if let Some(base) = gc_elem.get_attribute("base") {
-                                        // Track base type for block checking
-                                        // Type references always resolve against the schema target namespace
-                                        let base_ref = resolve_type_name(base, schema_target_ns);
+                                        // Track base type for block checking. The
+                                        // `grandchild` node is the actual extension/
+                                        // restriction element where `base="..."`
+                                        // appears, so prefix resolution sees the
+                                        // xmlns declarations on (and above) it.
+                                        let base_ref = resolve_type_name(
+                                            base,
+                                            schema_target_ns,
+                                            doc,
+                                            grandchild,
+                                        );
                                         if let TypeRef::Named(ns, ln) = &base_ref {
                                             base_type = Some((ns.clone(), ln.clone()));
                                         }
@@ -1161,7 +1212,7 @@ fn parse_attribute_decl(doc: &Document, node: NodeId) -> XmlResult<AttributeDecl
     };
 
     let type_ref = if let Some(type_name) = elem.get_attribute("type") {
-        resolve_type_name(type_name, &None)
+        resolve_type_name(type_name, &None, doc, node)
     } else {
         // Check for inline simpleType child
         let mut found_inline = None;
