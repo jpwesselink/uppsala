@@ -63,7 +63,7 @@ pub struct XPathError {
 }
 
 /// An XSD validation error.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct ValidationError {
     /// Human-readable description of the validation failure.
     pub message: String,
@@ -71,6 +71,12 @@ pub struct ValidationError {
     pub line: Option<usize>,
     /// Column number in the instance document, if available.
     pub column: Option<usize>,
+    /// Local name of the element this error pertains to, if the validator
+    /// can determine it. For "missing required element" errors this is the
+    /// name of the missing element, not its parent.
+    ///
+    /// Added by the imferno-patches branch (not in upstream uppsala).
+    pub element_path: Option<String>,
 }
 
 impl fmt::Display for XmlError {
@@ -157,6 +163,7 @@ impl XmlError {
             message: message.into(),
             line: None,
             column: None,
+            element_path: None,
         })
     }
 }

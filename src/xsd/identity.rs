@@ -85,6 +85,7 @@ impl XsdValidator {
                             ),
                             line: Some(doc.node_line(sel_node)),
                             column: Some(doc.node_column(sel_node)),
+                            element_path: doc.element(sel_node).map(|e| e.name.local_name.to_string()),
                         });
                         multiplicity_error = true;
                         break;
@@ -114,6 +115,9 @@ impl XsdValidator {
                             ),
                             line: Some(doc.node_line(sel_node)),
                             column: Some(doc.node_column(sel_node)),
+                            element_path: doc
+                                .element(sel_node)
+                                .map(|e| e.name.local_name.to_string()),
                         });
                         continue;
                     }
@@ -153,6 +157,7 @@ impl XsdValidator {
                         ),
                         line: Some(doc.node_line(sel_node)),
                         column: Some(doc.node_column(sel_node)),
+                        element_path: doc.element(sel_node).map(|e| e.name.local_name.to_string()),
                     });
                 } else {
                     table.tuples.push(tuple);
@@ -223,6 +228,7 @@ impl XsdValidator {
                             ),
                             line: Some(doc.node_line(sel_node)),
                             column: Some(doc.node_column(sel_node)),
+                            element_path: doc.element(sel_node).map(|e| e.name.local_name.to_string()),
                         });
                         all_present = false;
                         break;
@@ -262,6 +268,7 @@ impl XsdValidator {
                         ),
                         line: Some(doc.node_line(sel_node)),
                         column: Some(doc.node_column(sel_node)),
+                        element_path: doc.element(sel_node).map(|e| e.name.local_name.to_string()),
                     });
                 }
             }

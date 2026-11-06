@@ -61,6 +61,7 @@ impl XsdValidator {
                     message: "Document has no root element".to_string(),
                     line: None,
                     column: None,
+                    element_path: None,
                 });
                 return errors;
             }
@@ -98,6 +99,7 @@ impl XsdValidator {
                     ),
                     line: Some(doc.node_line(doc_elem)),
                     column: Some(doc.node_column(doc_elem)),
+                    element_path: doc.element(doc_elem).map(|e| e.name.local_name.to_string()),
                 });
             }
         }
@@ -671,6 +673,7 @@ impl XsdValidator {
                 message: format!("Element reference '{}' not found", display),
                 line: Some(doc.node_line(node)),
                 column: Some(doc.node_column(node)),
+                element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
             });
             return;
         }
@@ -684,6 +687,7 @@ impl XsdValidator {
                 ),
                 line: Some(doc.node_line(node)),
                 column: Some(doc.node_column(node)),
+                element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
             });
             return;
         }
@@ -702,6 +706,7 @@ impl XsdValidator {
                         message: "xsi:nil='true' on non-nillable element".to_string(),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                     });
                     return;
                 }
@@ -715,6 +720,7 @@ impl XsdValidator {
                         message: "Element with xsi:nil='true' must have no content".to_string(),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                     });
                 }
                 // Skip all further content validation — nilled element is valid if empty
@@ -733,6 +739,7 @@ impl XsdValidator {
                                 .to_string(),
                             line: Some(doc.node_line(node)),
                             column: Some(doc.node_column(node)),
+                            element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                         });
                         return;
                     }
@@ -748,6 +755,9 @@ impl XsdValidator {
                                 ),
                                 line: Some(doc.node_line(node)),
                                 column: Some(doc.node_column(node)),
+                                element_path: doc
+                                    .element(node)
+                                    .map(|e| e.name.local_name.to_string()),
                             });
                             return;
                         }
@@ -770,6 +780,7 @@ impl XsdValidator {
                             ),
                             line: Some(doc.node_line(node)),
                             column: Some(doc.node_column(node)),
+                            element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                         });
                         return;
                     }
@@ -797,6 +808,7 @@ impl XsdValidator {
                             message: block_msg,
                             line: Some(doc.node_line(node)),
                             column: Some(doc.node_column(node)),
+                            element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                         });
                         return;
                     }
@@ -813,6 +825,9 @@ impl XsdValidator {
                                             .to_string(),
                                     line: Some(doc.node_line(node)),
                                     column: Some(doc.node_column(node)),
+                                    element_path: doc
+                                        .element(node)
+                                        .map(|e| e.name.local_name.to_string()),
                                 });
                                 return;
                             }
@@ -826,6 +841,7 @@ impl XsdValidator {
                         message: format!("xsi:type '{}' not found", type_name),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                     });
                     return;
                 }
@@ -852,6 +868,7 @@ impl XsdValidator {
                         ),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                     });
                 }
                 self.validate_simple_content(doc, node, st, errors);
@@ -879,6 +896,7 @@ impl XsdValidator {
                                 ),
                                 line: Some(doc.node_line(node)),
                                 column: Some(doc.node_column(node)),
+                                element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                             });
                             }
                             let text = doc.text_content_deep(node);
@@ -894,6 +912,7 @@ impl XsdValidator {
                             message: format!("Type '{}' not found", display),
                             line: Some(doc.node_line(node)),
                             column: Some(doc.node_column(node)),
+                            element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                         });
                     }
                     TypeRef::Inline(_) => {}
@@ -912,6 +931,7 @@ impl XsdValidator {
                     ),
                     line: Some(doc.node_line(node)),
                     column: Some(doc.node_column(node)),
+                    element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                 });
             }
         }
@@ -1004,6 +1024,7 @@ impl XsdValidator {
                 message: "Complex type derivation cycle detected".to_string(),
                 line: Some(doc.node_line(node)),
                 column: Some(doc.node_column(node)),
+                element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
             });
             return;
         }
@@ -1029,6 +1050,7 @@ impl XsdValidator {
                             message: format!("Required attribute '{}' is missing", display),
                             line: Some(doc.node_line(node)),
                             column: Some(doc.node_column(node)),
+                            element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                         });
                     }
                 }
@@ -1096,6 +1118,7 @@ impl XsdValidator {
                             ),
                             line: Some(doc.node_line(node)),
                             column: Some(doc.node_column(node)),
+                            element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                         });
                         continue;
                     }
@@ -1131,6 +1154,7 @@ impl XsdValidator {
                                             ),
                                             line: Some(doc.node_line(node)),
                                             column: Some(doc.node_column(node)),
+                                            element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                                         });
                                     }
                                     // For lax: no declaration is OK
@@ -1166,6 +1190,7 @@ impl XsdValidator {
                             ),
                             line: Some(doc.node_line(node)),
                             column: Some(doc.node_column(node)),
+                            element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                         });
                     }
                 }
@@ -1195,6 +1220,7 @@ impl XsdValidator {
                                         .to_string(),
                                 line: Some(doc.node_line(child)),
                                 column: Some(doc.node_column(child)),
+                                element_path: doc.element(child).map(|e| e.name.local_name.to_string()),
                             });
                             break; // report once
                         }
@@ -1224,6 +1250,9 @@ impl XsdValidator {
                         ),
                         line: Some(doc.node_line(remaining)),
                         column: Some(doc.node_column(remaining)),
+                        element_path: doc
+                            .element(remaining)
+                            .map(|e| e.name.local_name.to_string()),
                     });
                 }
             }
@@ -1237,6 +1266,7 @@ impl XsdValidator {
                         message: "Element should have empty content".to_string(),
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                     });
                 }
                 // Check no text content (unless mixed)
@@ -1249,6 +1279,7 @@ impl XsdValidator {
                                 .to_string(),
                             line: Some(doc.node_line(node)),
                             column: Some(doc.node_column(node)),
+                            element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                         });
                     }
                 }
@@ -1273,6 +1304,9 @@ impl XsdValidator {
                             ),
                             line: Some(doc.node_line(remaining)),
                             column: Some(doc.node_column(remaining)),
+                            element_path: doc
+                                .element(remaining)
+                                .map(|e| e.name.local_name.to_string()),
                         });
                     }
                 }
@@ -1297,6 +1331,9 @@ impl XsdValidator {
                             ),
                             line: Some(doc.node_line(remaining)),
                             column: Some(doc.node_column(remaining)),
+                            element_path: doc
+                                .element(remaining)
+                                .map(|e| e.name.local_name.to_string()),
                         });
                     }
                 }
@@ -1373,6 +1410,7 @@ impl XsdValidator {
                         message,
                         line: Some(doc.node_line(node)),
                         column: Some(doc.node_column(node)),
+                        element_path: doc.element(node).map(|e| e.name.local_name.to_string()),
                     });
                 }
             }
@@ -1501,6 +1539,8 @@ impl XsdValidator {
                                 ),
                                 line: Some(doc.node_line(parent)),
                                 column: Some(doc.node_column(parent)),
+                                // The path is the missing element's name, not its parent's.
+                                element_path: Some(decl.name.to_string()),
                             });
                             break 'outer;
                         }
@@ -1588,6 +1628,7 @@ impl XsdValidator {
                                                     ),
                                                     line: Some(doc.node_line(child)),
                                                     column: Some(doc.node_column(child)),
+                                                    element_path: doc.element(child).map(|e| e.name.local_name.to_string()),
                                                 });
                                             }
                                         }
@@ -1613,6 +1654,9 @@ impl XsdValidator {
                                 ),
                                 line: Some(doc.node_line(parent)),
                                 column: Some(doc.node_column(parent)),
+                                element_path: doc
+                                    .element(parent)
+                                    .map(|e| e.name.local_name.to_string()),
                             });
                             break 'outer;
                         }
@@ -1641,6 +1685,7 @@ impl XsdValidator {
                 ),
                 line: Some(doc.node_line(parent)),
                 column: Some(doc.node_column(parent)),
+                element_path: doc.element(parent).map(|e| e.name.local_name.to_string()),
             });
         }
 
@@ -1680,6 +1725,7 @@ impl XsdValidator {
                         message: "Expected one of the choice alternatives".to_string(),
                         line: Some(doc.node_line(parent)),
                         column: Some(doc.node_column(parent)),
+                        element_path: doc.element(parent).map(|e| e.name.local_name.to_string()),
                     });
                 }
             }
@@ -1768,6 +1814,8 @@ impl XsdValidator {
                                     ),
                                     line: Some(doc.node_line(current_child)),
                                     column: Some(doc.node_column(current_child)),
+                                    // The path is the missing element's name, not its parent's.
+                                    element_path: Some(decl.name.to_string()),
                                 });
                             }
                             matched_any = true;
@@ -1881,6 +1929,7 @@ impl XsdValidator {
                                                         ),
                                                         line: Some(doc.node_line(child)),
                                                         column: Some(doc.node_column(child)),
+                                                        element_path: doc.element(child).map(|e| e.name.local_name.to_string()),
                                                     });
                                                 }
                                             }
@@ -1922,6 +1971,9 @@ impl XsdValidator {
                         ),
                         line: Some(doc.node_line(current_child)),
                         column: Some(doc.node_column(current_child)),
+                        element_path: doc
+                            .element(current_child)
+                            .map(|e| e.name.local_name.to_string()),
                     });
                 }
                 break;
@@ -1940,6 +1992,7 @@ impl XsdValidator {
                     message: "Expected one of the choice alternatives".to_string(),
                     line: Some(doc.node_line(parent)),
                     column: Some(doc.node_column(parent)),
+                    element_path: doc.element(parent).map(|e| e.name.local_name.to_string()),
                 });
             }
         }
@@ -2012,6 +2065,9 @@ impl XsdValidator {
                                         ),
                                         line: Some(doc.node_line(child)),
                                         column: Some(doc.node_column(child)),
+                                        element_path: doc
+                                            .element(child)
+                                            .map(|e| e.name.local_name.to_string()),
                                     });
                                 } else {
                                     matched[i] = true;
@@ -2058,6 +2114,7 @@ impl XsdValidator {
                                             ),
                                             line: Some(doc.node_line(child)),
                                             column: Some(doc.node_column(child)),
+                                            element_path: doc.element(child).map(|e| e.name.local_name.to_string()),
                                         });
                                     }
                                 }
@@ -2076,6 +2133,7 @@ impl XsdValidator {
                         ),
                         line: Some(doc.node_line(child)),
                         column: Some(doc.node_column(child)),
+                        element_path: doc.element(child).map(|e| e.name.local_name.to_string()),
                     });
                 }
             }
@@ -2092,6 +2150,8 @@ impl XsdValidator {
                         ),
                         line: Some(doc.node_line(parent)),
                         column: Some(doc.node_column(parent)),
+                        // The path is the missing element's name, not its parent's.
+                        element_path: Some(decl.name.to_string()),
                     });
                 }
             }
