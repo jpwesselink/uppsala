@@ -116,6 +116,8 @@ pub mod parser;
 pub mod pull;
 /// Accelerated byte scanning for parser hot loops.
 mod simd;
+/// Source byte ranges for attributes ([`Document::attribute_spans`]).
+pub mod source_span;
 
 /// Fuzz-only re-export of the internal SIMD scanners (scalar + SSE2) and the
 /// serializer escaper, for the differential harnesses in `audit/fuzz`. Gated
@@ -144,6 +146,7 @@ pub use error::{
 pub use namespace::NamespaceResolver;
 pub use parser::Parser;
 pub use pull::{NamespaceDeclaration, PullEvent, PullParser};
+pub use source_span::AttributeSpan;
 pub use writer::XmlWriter;
 pub use xpath::{XPathEvaluator, XPathValue};
 pub use xsd::{XsdValidator, XSI_NAMESPACE, XS_NAMESPACE};
